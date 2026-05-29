@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="IM poster study in pure black and white, set in Lexend Peta with lorem ipsum text.">
+<meta name="author" content="Hagg">
+<meta name="theme-color" content="#ffffff">
+<title>IM Poster Study</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lexend+Peta:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #fff;
+    --ink: #000;
+    --tracking: 0.05em;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html,
+  body {
+    margin: 0;
+    min-height: 100%;
+    background: var(--paper);
+  }
+
+  body {
+    display: grid;
+    place-items: center;
+    min-height: 100vh;
+    color: var(--ink);
+    font-family: "Lexend Peta", Arial, sans-serif;
+  }
+
+  .sheet {
+    width: min(92vw, 742px, calc(96vh * 0.6666667));
+    aspect-ratio: 720 / 1080;
+    background: var(--paper);
+    overflow: hidden;
+  }
+
+  .poster {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-rows: 62.5% 37.5%;
+    background: var(--paper);
+  }
+
+  .field-wrap {
+    padding: 43px 38px 0;
+  }
+
+  .field {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+    background: var(--ink);
+    overflow: hidden;
+  }
+
+  .orb {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 86.8%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--paper);
+    transform: translate(-50%, -50%);
+    animation: orb-breathe 8s ease-in-out infinite;
+  }
+
+  .copy {
+    padding: 5px 38px 24px;
+    overflow: hidden;
+  }
+
+  .mark {
+    display: block;
+    margin: 0 0 10px -7px;
+    font-size: clamp(111px, 23.4vw, 176px);
+    line-height: 0.82;
+    font-weight: 800;
+    letter-spacing: var(--tracking);
+    white-space: nowrap;
+    transform: scaleX(0.92);
+    transform-origin: left top;
+  }
+
+  .subhead {
+    margin: 0 0 12px;
+    font-size: clamp(13px, 2.9vw, 24px);
+    line-height: 1.08;
+    font-weight: 500;
+    letter-spacing: var(--tracking);
+    text-transform: uppercase;
+  }
+
+  .columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+    align-items: end;
+  }
+
+  .columns p {
+    margin: 0;
+    font-size: clamp(6px, 1.05vw, 9px);
+    line-height: 1.36;
+    font-weight: 400;
+    letter-spacing: var(--tracking);
+  }
+
+  @keyframes orb-breathe {
+    0%,
+    100% {
+      transform: translate(-50%, -50%) scale(1);
+    }
+    50% {
+      transform: translate(-50%, -50%) scale(1.018);
+    }
+  }
+
+  @media (max-width: 540px) {
+    .sheet {
+      width: 100vw;
+      min-height: 100vh;
+      aspect-ratio: auto;
+    }
+
+    .poster {
+      min-height: 100vh;
+      grid-template-rows: auto 1fr;
+    }
+
+    .field-wrap {
+      padding: 30px 25px 0;
+    }
+
+    .copy {
+      padding: 7px 25px 26px;
+    }
+
+    .mark {
+      font-size: 30vw;
+    }
+
+    .columns {
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .orb {
+      animation: none;
+    }
+  }
+</style>
+</head>
+<body>
+<!--
+  Ten-pass rebuild:
+  01 hard black/white only
+  02 white sheet, no frame effects
+  03 square black image field
+  04 oversized white circle
+  05 Lexend Peta
+  06 5% tracking
+  07 IM as the giant mark
+  08 lorem ipsum support copy
+  09 closer poster proportions
+  10 tiny breathing motion, flat fills only
+-->
+<main class="sheet" aria-label="Pure black and white IM poster study with lorem ipsum text.">
+  <section class="poster">
+    <div class="field-wrap">
+      <div class="field" aria-hidden="true">
+        <div class="orb"></div>
+      </div>
+    </div>
+
+    <div class="copy">
+      <strong class="mark">IM</strong>
+      <h1 class="subhead">Lorem ipsum<br>dolor sit amet</h1>
+      <div class="columns">
+        <p>Lorem ipsum<br>dolor sit amet<br>consectetur</p>
+        <p>Sed do eiusmod<br>tempor incididunt<br>ut labore</p>
+        <p>Ut enim ad minim<br>veniam quis<br>nostrud ipsum</p>
+      </div>
+    </div>
+  </section>
+</main>
+</body>
+</html>

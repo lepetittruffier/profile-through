@@ -6,10 +6,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Mono:wght@400;500&display=swap" rel="stylesheet">
-<meta name="description" content="Profile, in Wireframe — a code-native wireframed 3D portrait study. Hägg, 2026. Art Basel.">
+<meta name="description" content="Profile, Through v2 — a cleaner, larger, centered code-native wireframed 3D portrait on a white field. The body breathes with cooler depth accents and no visible text. Hägg, 2026. Art Basel.">
 <meta name="author" content="Hägg">
 <meta name="theme-color" content="#FFFFFF">
-<title>Profile, in Wireframe · Hägg · 2026</title>
+<title>Profile, Through v2 · Hägg · 2026</title>
 
 <!--
   ════════════════════════════════════════════════════════════════════════════
@@ -70,10 +70,51 @@
     height: auto;
     max-height: 100vh;
     display: block;
+    background: #FFFFFF;
   }
   svg text {
-    font-family: 'Red Hat Mono', 'IBM Plex Mono', ui-monospace, 'SF Mono', monospace;
-    font-weight: 400;
+    display: none;
+  }
+  #composition-architecture,
+  #forensic-annotations,
+  #signature {
+    display: none;
+  }
+  #construction {
+    opacity: 0.16;
+  }
+  #depth-field {
+    transform-origin: 1480px 540px;
+    transform-box: view-box;
+    animation: depth-field-drift 15s ease-in-out infinite;
+  }
+  #depth-field .cool-line {
+    stroke: #1E63FF;
+  }
+  #figure-armature,
+  #profile-lock,
+  #hair-strands,
+  #hand-gesture,
+  #sweater,
+  #depth-contours {
+    filter:
+      drop-shadow(-18px 14px 0 rgba(30, 99, 255, 0.12))
+      drop-shadow(10px -8px 0 rgba(0, 0, 0, 0.045));
+  }
+  #skeleton {
+    filter:
+      drop-shadow(0 0 16px rgba(30, 99, 255, 0.22))
+      drop-shadow(-10px 8px 0 rgba(30, 99, 255, 0.1));
+  }
+  @keyframes depth-field-drift {
+    0%, 100% {
+      opacity: 0.72;
+      transform: translate(-4px, 5px) scale(0.992);
+    }
+    50% {
+      opacity: 1;
+      transform: translate(8px, -7px) scale(1.012);
+    }
   }
 
   /* Groups whose transform-origin we set up-front for motion targeting.
@@ -81,10 +122,44 @@
   #figure-armature,
   #depth-contours,
   #hand-gesture,
+  #skeleton,
   #sweater {
     transform-origin: 1480px 540px;
     transform-box: view-box;
     will-change: transform, opacity;
+  }
+
+  /* ─── X-RAY REVEAL (Pass 12 mechanic) ───────────────────────────────────
+     CSS handles the opacity reveal so it works EVEN when reduced motion is on
+     and EVEN if rAF is suspended (background tabs, kiosk displays).
+     JS only toggles body classes based on cursor proximity / click.        */
+  #sweater  { transition: opacity 0.45s ease-out; opacity: 0.95; }
+  #skeleton { transition: opacity 0.45s ease-out; opacity: 0.28; }
+
+  /* Cursor near torso → sweater fades, skeleton emerges */
+  body.peel #sweater  { opacity: 0.1; }
+  body.peel #skeleton { opacity: 1; }
+
+  /* Click-locked kiosk mode (no cursor required) — same effect, sticky */
+  body.peel-lock #sweater  { opacity: 0.1; }
+  body.peel-lock #skeleton { opacity: 1; }
+
+  /* Ambient oscillation — slow surface/interior flicker even without cursor.
+     Pauses while body is in .peel or .peel-lock state (the user's interactive
+     read takes precedence). */
+  @keyframes xray-ambient-sweater {
+    0%, 100% { opacity: 0.95; }
+    50%      { opacity: 0.58; }
+  }
+  @keyframes xray-ambient-skeleton {
+    0%, 100% { opacity: 0.28; }
+    50%      { opacity: 0.78; }
+  }
+  #sweater  { animation: xray-ambient-sweater 13s ease-in-out infinite; }
+  #skeleton { animation: xray-ambient-skeleton 13s ease-in-out infinite; }
+  body.peel #sweater, body.peel #skeleton,
+  body.peel-lock #sweater, body.peel-lock #skeleton {
+    animation: none;
   }
   #hair-envelope,
   #head-armature,
@@ -109,24 +184,27 @@
   /* Honor user preference — no animation when reduced motion is requested */
   @media (prefers-reduced-motion: reduce) {
     /* JS already short-circuits; this is a belt-and-suspenders. */
-    #figure-armature, #depth-contours, #hand-gesture, #sweater,
+    #figure-armature, #depth-contours, #hand-gesture,
     #hair-envelope, #head-armature, #head-meridians, #head-parallels,
     #profile-lock, #hair-strands,
     #crown-spikes, #top-back-fall, #side-of-head, #back-drop, #forehead-wisps {
       transform: none !important;
       opacity: 1 !important;
     }
+    /* NOTE: #skeleton and #sweater intentionally excluded — X-ray reveal is
+       the artwork's primary mechanic and works via CSS transitions, not
+       JS-driven animation. It's safe + accessible in reduced-motion mode. */
   }
 </style>
 </head>
 <body>
-<svg viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg"
+<svg viewBox="740 85 1480 832.5" xmlns="http://www.w3.org/2000/svg"
      preserveAspectRatio="xMidYMid meet"
      role="img"
      aria-labelledby="art-title art-desc">
 
-  <title id="art-title">Profile, in Wireframe — Hägg, 2026</title>
-  <desc id="art-desc">A code-native wireframed 3D portrait study in pure monochrome. A young woman shown in three-quarter right-facing profile, wet-spiky shoulder-length hair, left hand crossed up to rest fingers on the right side of her neck, white raw-knit sweater with distressed cuff and small torn shoulder seam. The figure is anchored to the right third of a 16:9 landscape canvas, set against a vast architectural void containing twelve latin-labeled anatomical leader lines, a scale bar, and an edition stamp. The composition breathes subtly via a 6-second sin-wave cycle and tilts its head slightly toward the viewer's cursor position.</desc>
+  <title id="art-title">Profile, Through — Hägg, 2026</title>
+  <desc id="art-desc">A code-native wireframed 3D portrait in pure monochrome. A young woman shown in three-quarter right-facing profile, wet-spiky shoulder-length hair, left hand crossed up to rest fingers on the right side of her neck, wearing a raw-knit sweater. The clothing layer is semi-transparent: as the viewer's cursor approaches the torso, the sweater fades and the underlying skeleton — sternum, paired clavicles, ribcage, cervical vertebrae, radius and ulna, phalanges through the fingers — emerges from beneath. A slow background cycle also continuously flickers between surface and interior. The figure is anchored to the right third of a 16:9 landscape canvas, set against a vast architectural void containing twelve latin-labeled anatomical leader lines, a scale bar, and an edition stamp. The composition breathes subtly via a 5-second sin-wave cycle and tilts its head toward the viewer's cursor position.</desc>
 
   <defs>
     <!-- A small knit-stitch glyph used via <use> for the sparse texture grid -->
@@ -136,7 +214,28 @@
     </symbol>
   </defs>
 
-  <rect width="1920" height="1080" fill="#FFFFFF"/>
+  <rect x="-2000" y="-2000" width="6000" height="5000" fill="#FFFFFF"/>
+
+  <g id="depth-field" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <g stroke="#0A0A0A" stroke-width="0.45" opacity="0.16" stroke-dasharray="5 9">
+      <ellipse cx="1480" cy="560" rx="440" ry="620"/>
+      <ellipse cx="1480" cy="560" rx="360" ry="505"/>
+      <ellipse cx="1480" cy="560" rx="275" ry="390"/>
+      <path d="M 1030 330 C 1210 260, 1390 238, 1635 275 C 1810 302, 1950 360, 2100 460"/>
+      <path d="M 980 730 C 1195 650, 1410 620, 1650 658 C 1845 690, 2020 780, 2150 905"/>
+    </g>
+    <g class="cool-line" stroke-width="1.1" opacity="0.2">
+      <path d="M 1120 272 C 1285 188, 1490 170, 1675 232 C 1810 276, 1894 356, 1956 475"/>
+      <path d="M 1060 852 C 1260 738, 1500 708, 1728 774 C 1878 816, 1996 910, 2078 1045"/>
+      <path d="M 1275 145 C 1390 315, 1436 520, 1388 742 C 1362 864, 1310 986, 1225 1115"/>
+      <path d="M 1710 130 C 1565 330, 1526 545, 1598 770 C 1648 925, 1740 1030, 1872 1122"/>
+    </g>
+    <g class="cool-line" stroke-width="0.55" opacity="0.16" stroke-dasharray="3 8">
+      <path d="M 1190 430 C 1390 390, 1620 405, 1870 480"/>
+      <path d="M 1160 520 C 1395 468, 1655 490, 1940 590"/>
+      <path d="M 1140 615 C 1400 552, 1690 590, 2010 725"/>
+    </g>
+  </g>
 
   <!-- ============================================================
        LAYERS A-D · CARRY FORWARD (Construction + Armature + Profile + Hair)
@@ -404,7 +503,751 @@
   </g>
 
   <!-- ============================================================
-       LAYER F · SWEATER TOPOLOGY  (new this pass)
+       LAYER F · SKELETON  (variant of Pass 05 — sweater removed, bones exposed)
+       The clothing layer dissolves to reveal the body's bone framework.
+       Sternum + manubrium central axis, paired clavicles spanning the shoulders,
+       ribcage curving from sternum to spine, cervical vertebrae stacked through
+       the neck, radius + ulna through the forearm, phalanges visible inside the
+       gesturing fingers. Anatomical-editorial register.
+       ============================================================ -->
+  <g id="skeleton" stroke="#0A0A0A" fill="none"
+     stroke-linecap="round" stroke-linejoin="round">
+
+    <!-- ─────────────────────────────────────────────────────────
+         F.1 CERVICAL VERTEBRAE — 7 stacked discs visible through the neck
+         (C1 atlas at top through C7 at shoulder junction)
+         ───────────────────────────────────────────────────────── -->
+    <g id="cervical-spine" stroke-width="0.7" opacity="0.85">
+      <!-- C1 atlas — top of spine, ring-shaped -->
+      <ellipse cx="1480" cy="512" rx="13" ry="5"/>
+      <path d="M 1467 512 C 1467 506, 1493 506, 1493 512" stroke-width="0.5"/>
+      <!-- C2 axis — has odontoid process pointing up -->
+      <ellipse cx="1480" cy="530" rx="14" ry="5.5"/>
+      <line x1="1480" y1="525" x2="1480" y2="517" stroke-width="0.5"/>
+      <!-- C3 -->
+      <ellipse cx="1480" cy="552" rx="14" ry="5.5"/>
+      <!-- C4 -->
+      <ellipse cx="1481" cy="578" rx="15" ry="6"/>
+      <!-- C5 -->
+      <ellipse cx="1482" cy="605" rx="15" ry="6"/>
+      <!-- C6 -->
+      <ellipse cx="1483" cy="635" rx="16" ry="6.5"/>
+      <!-- C7 vertebra prominens (largest, palpable at base of neck) -->
+      <ellipse cx="1484" cy="668" rx="17" ry="7"/>
+      <!-- Spinous process tick on C7 -->
+      <line x1="1484" y1="675" x2="1484" y2="685" stroke-width="0.5"/>
+
+      <!-- Connecting interior column (faint, implies the spine through center) -->
+      <path d="M 1480 510 C 1481 555, 1483 615, 1484 685" stroke-width="0.4" opacity="0.55" stroke-dasharray="2 4"/>
+    </g>
+
+    <!-- ─────────────────────────────────────────────────────────
+         F.2 CLAVICLES — paired collar bones, sternum out to shoulder tips
+         Real anatomy: slight S-curve, slight upward slope toward shoulder
+         ───────────────────────────────────────────────────────── -->
+    <g id="clavicles" stroke-width="1.0" opacity="0.9">
+      <!-- LEFT clavicle (screen-LEFT, subject's right) — visible side -->
+      <path d="M 1480 738
+               C 1455 735, 1410 728, 1370 724
+               C 1330 722, 1300 724, 1285 728"/>
+      <!-- Subtle parallel showing the bone's depth/thickness -->
+      <path d="M 1480 745
+               C 1455 742, 1410 736, 1370 734
+               C 1330 732, 1305 734, 1290 738"
+            stroke-width="0.5" opacity="0.65"/>
+      <!-- Acromial end joint (where clavicle meets scapula) -->
+      <circle cx="1285" cy="729" r="3.5" stroke-width="0.6"/>
+
+      <!-- RIGHT clavicle (screen-RIGHT, subject's left) -->
+      <path d="M 1480 738
+               C 1505 735, 1555 728, 1605 722
+               C 1640 720, 1665 720, 1680 722"/>
+      <path d="M 1480 745
+               C 1505 742, 1555 735, 1605 730
+               C 1640 728, 1665 728, 1680 730"
+            stroke-width="0.5" opacity="0.65"/>
+      <circle cx="1680" cy="723" r="3.5" stroke-width="0.6"/>
+    </g>
+
+    <!-- ─────────────────────────────────────────────────────────
+         F.3 STERNUM + MANUBRIUM — central bone of the chest
+         Manubrium (trapezoid top) + body (long) + xiphoid (pointed bottom)
+         ───────────────────────────────────────────────────────── -->
+    <g id="sternum" stroke-width="0.9" opacity="0.9">
+      <!-- Manubrium (top portion, wider) -->
+      <path d="M 1462 738
+               L 1498 738
+               L 1495 768
+               L 1465 768
+               Z"/>
+      <!-- Manubriosternal joint line -->
+      <line x1="1465" y1="768" x2="1495" y2="768" stroke-width="0.6"/>
+
+      <!-- Sternum body (long vertical bone) -->
+      <path d="M 1468 768
+               L 1492 768
+               L 1490 870
+               L 1470 870
+               Z"/>
+
+      <!-- Costal notches (small ticks along sternum where ribs attach) — 6 pairs -->
+      <g stroke-width="0.5" opacity="0.7">
+        <line x1="1468" y1="784" x2="1465" y2="785"/>
+        <line x1="1492" y1="784" x2="1495" y2="785"/>
+        <line x1="1468" y1="803" x2="1465" y2="804"/>
+        <line x1="1492" y1="803" x2="1495" y2="804"/>
+        <line x1="1468" y1="822" x2="1465" y2="823"/>
+        <line x1="1492" y1="822" x2="1495" y2="823"/>
+        <line x1="1468" y1="841" x2="1465" y2="842"/>
+        <line x1="1492" y1="841" x2="1495" y2="842"/>
+        <line x1="1469" y1="859" x2="1466" y2="860"/>
+        <line x1="1491" y1="859" x2="1494" y2="860"/>
+      </g>
+
+      <!-- Xiphoid process (small pointed cartilage at bottom) -->
+      <path d="M 1470 870
+               L 1490 870
+               L 1480 895
+               Z"
+            stroke-width="0.75"/>
+
+      <!-- Central axis line down the sternum -->
+      <line x1="1480" y1="740" x2="1480" y2="893"
+            stroke-width="0.4" opacity="0.5" stroke-dasharray="2 3"/>
+    </g>
+
+    <!-- ─────────────────────────────────────────────────────────
+         F.4 RIB CAGE — pairs of ribs curving from sternum back to spine
+         Visible side (screen-right, subject's left): 9 ribs, full curves
+         Hidden side (screen-left, subject's right): shorter visible arcs
+         ───────────────────────────────────────────────────────── -->
+    <g id="rib-cage">
+
+      <!-- RIGHT-side ribs (screen-RIGHT, the more visible side in 3/4 view) -->
+      <g id="ribs-right" stroke-width="0.85" opacity="0.85">
+        <!-- Rib 1 (highest, shortest curve) -->
+        <path d="M 1495 758
+                 C 1545 758, 1605 770, 1655 790
+                 C 1685 805, 1700 822, 1705 838"/>
+        <!-- Rib 2 -->
+        <path d="M 1495 778
+                 C 1550 778, 1615 790, 1668 815
+                 C 1700 830, 1718 850, 1722 870"/>
+        <!-- Rib 3 -->
+        <path d="M 1495 798
+                 C 1555 798, 1625 812, 1680 838
+                 C 1710 855, 1728 878, 1730 900"/>
+        <!-- Rib 4 -->
+        <path d="M 1495 818
+                 C 1558 818, 1632 832, 1688 860
+                 C 1716 878, 1732 902, 1734 928"/>
+        <!-- Rib 5 (longest) -->
+        <path d="M 1495 838
+                 C 1560 838, 1635 854, 1692 882
+                 C 1720 902, 1735 928, 1735 955"/>
+        <!-- Rib 6 -->
+        <path d="M 1493 858
+                 C 1560 858, 1635 875, 1690 905
+                 C 1718 925, 1730 950, 1730 975"/>
+        <!-- Rib 7 (last "true" rib) -->
+        <path d="M 1490 878
+                 C 1555 880, 1628 898, 1680 925
+                 C 1708 944, 1722 968, 1720 990"/>
+        <!-- Rib 8 (false rib, shorter) -->
+        <path d="M 1485 898
+                 C 1540 905, 1605 925, 1655 950
+                 C 1685 968, 1700 985, 1700 1005"
+              stroke-width="0.7" opacity="0.75"/>
+        <!-- Rib 9 (floating, shortest visible) -->
+        <path d="M 1480 918
+                 C 1525 928, 1580 950, 1620 975
+                 C 1648 992, 1665 1005, 1665 1020"
+              stroke-width="0.6" opacity="0.65"/>
+      </g>
+
+      <!-- LEFT-side ribs (screen-LEFT, partially hidden by torso silhouette;
+           we show their visible portion only, then they vanish behind the body) -->
+      <g id="ribs-left" stroke-width="0.7" opacity="0.7">
+        <path d="M 1465 758 C 1430 758, 1390 768, 1360 778 C 1335 786, 1320 795, 1310 803"/>
+        <path d="M 1465 778 C 1425 778, 1380 790, 1345 803 C 1320 813, 1305 822, 1297 830"/>
+        <path d="M 1465 798 C 1420 798, 1372 812, 1335 828 C 1308 840, 1292 850, 1285 858"/>
+        <path d="M 1465 818 C 1415 818, 1365 832, 1325 850 C 1297 864, 1282 875, 1275 885"/>
+        <path d="M 1465 838 C 1410 838, 1358 854, 1318 875 C 1290 890, 1274 902, 1268 913"/>
+        <path d="M 1463 858 C 1408 858, 1355 875, 1313 898 C 1285 915, 1268 928, 1263 940"/>
+        <path d="M 1460 878 C 1403 880, 1348 898, 1308 922 C 1280 940, 1264 953, 1258 967"
+              stroke-width="0.6" opacity="0.6"/>
+        <path d="M 1455 898 C 1395 905, 1340 925, 1300 950 C 1275 968, 1260 982, 1255 995"
+              stroke-width="0.55" opacity="0.55"/>
+      </g>
+
+      <!-- Costal cartilage hints — short dashed segments at sternum-rib junctions -->
+      <g id="costal-cartilage" stroke-width="0.4" opacity="0.55" stroke-dasharray="2 2">
+        <line x1="1495" y1="758" x2="1505" y2="760"/>
+        <line x1="1495" y1="778" x2="1505" y2="780"/>
+        <line x1="1495" y1="798" x2="1505" y2="800"/>
+        <line x1="1495" y1="818" x2="1505" y2="820"/>
+        <line x1="1495" y1="838" x2="1505" y2="840"/>
+        <line x1="1465" y1="758" x2="1455" y2="760"/>
+        <line x1="1465" y1="778" x2="1455" y2="780"/>
+        <line x1="1465" y1="798" x2="1455" y2="800"/>
+        <line x1="1465" y1="818" x2="1455" y2="820"/>
+        <line x1="1465" y1="838" x2="1455" y2="840"/>
+      </g>
+
+    </g>
+
+    <!-- ─────────────────────────────────────────────────────────
+         F.5 SCAPULA HINT — partial outline of shoulder blade on screen-LEFT
+         (subject's right scapula, the visible back-side edge in 3/4 view)
+         ───────────────────────────────────────────────────────── -->
+    <g id="scapula" stroke-width="0.7" opacity="0.7">
+      <!-- Medial border (the side facing the spine) -->
+      <path d="M 1285 730
+               L 1280 770
+               L 1278 820
+               L 1285 870
+               L 1305 905"/>
+      <!-- Spine of scapula (ridge across the back) — partial -->
+      <path d="M 1283 765 L 1310 770" stroke-width="0.5"/>
+    </g>
+
+    <!-- ─────────────────────────────────────────────────────────
+         F.6 RADIUS + ULNA — paired forearm bones through the arm
+         Run parallel through the existing forearm geometry from elbow
+         (off-canvas) up to wrist at (1430, 590)
+         ───────────────────────────────────────────────────────── -->
+    <g id="forearm-bones" stroke-width="0.85" opacity="0.85">
+      <!-- Ulna (outer/back bone, slightly longer at elbow, ends at wrist styloid) -->
+      <path d="M 1306 770
+               C 1335 712, 1368 658, 1398 618
+               C 1418 596, 1430 588, 1438 583"/>
+      <!-- Radius (inner/thumb-side bone, parallel to ulna) -->
+      <path d="M 1298 778
+               C 1325 723, 1358 670, 1390 630
+               C 1408 610, 1422 598, 1432 595"/>
+      <!-- Interosseous membrane hint (faint dashes between the two bones) -->
+      <g stroke-width="0.35" opacity="0.45" stroke-dasharray="2 4">
+        <line x1="1320" y1="745" x2="1316" y2="735"/>
+        <line x1="1345" y1="710" x2="1341" y2="700"/>
+        <line x1="1370" y1="675" x2="1366" y2="665"/>
+        <line x1="1395" y1="635" x2="1391" y2="625"/>
+        <line x1="1415" y1="608" x2="1413" y2="598"/>
+      </g>
+    </g>
+
+    <!-- ─────────────────────────────────────────────────────────
+         F.7 CARPALS + METACARPALS — bones through wrist + back of hand
+         ───────────────────────────────────────────────────────── -->
+    <g id="hand-bones" stroke-width="0.55" opacity="0.8">
+      <!-- Carpal cluster (8 small bones at wrist, simplified as 4-5 ovals) -->
+      <ellipse cx="1438" cy="595" rx="5" ry="3"/>
+      <ellipse cx="1444" cy="600" rx="4.5" ry="3"/>
+      <ellipse cx="1448" cy="588" rx="4" ry="2.5"/>
+      <ellipse cx="1442" cy="603" rx="4" ry="2.5"/>
+
+      <!-- Metacarpals (5 long bones from carpals to finger bases) -->
+      <path d="M 1444 595 L 1461 509"/>
+      <path d="M 1446 600 L 1461 516"/>
+      <path d="M 1448 603 L 1461 522"/>
+      <path d="M 1450 605 L 1458 528"/>
+      <path d="M 1450 600 L 1452 540"/>  <!-- thumb metacarpal, shorter -->
+    </g>
+
+    <!-- ─────────────────────────────────────────────────────────
+         F.8 PHALANGES — finger bones inside each visible finger
+         Each finger has 3 phalanges (proximal, middle, distal) except thumb (2)
+         ───────────────────────────────────────────────────────── -->
+    <g id="phalanges" stroke-width="0.55" opacity="0.8">
+
+      <!-- INDEX finger phalanges -->
+      <g>
+        <path d="M 1462 503 L 1470 492"/> <!-- proximal -->
+        <circle cx="1470" cy="492" r="1.3"/> <!-- PIP joint -->
+        <path d="M 1470 492 L 1478 482"/> <!-- middle -->
+        <circle cx="1478" cy="482" r="1.2"/> <!-- DIP joint -->
+        <path d="M 1478 482 L 1485 472"/> <!-- distal -->
+      </g>
+
+      <!-- MIDDLE finger phalanges -->
+      <g>
+        <path d="M 1462 511 L 1472 503"/>
+        <circle cx="1472" cy="503" r="1.3"/>
+        <path d="M 1472 503 L 1480 493"/>
+        <circle cx="1480" cy="493" r="1.2"/>
+        <path d="M 1480 493 L 1488 484"/>
+      </g>
+
+      <!-- RING finger phalanges -->
+      <g>
+        <path d="M 1461 519 L 1471 511"/>
+        <circle cx="1471" cy="511" r="1.2"/>
+        <path d="M 1471 511 L 1480 503"/>
+        <circle cx="1480" cy="503" r="1.2"/>
+        <path d="M 1480 503 L 1487 497"/>
+      </g>
+
+      <!-- PINKY phalanges -->
+      <g>
+        <path d="M 1459 526 L 1467 521"/>
+        <circle cx="1467" cy="521" r="1"/>
+        <path d="M 1467 521 L 1474 515"/>
+        <circle cx="1474" cy="515" r="1"/>
+        <path d="M 1474 515 L 1480 511"/>
+      </g>
+
+      <!-- THUMB phalanges (only 2 — proximal + distal) -->
+      <g>
+        <path d="M 1452 545 L 1460 530"/>
+        <circle cx="1460" cy="530" r="1.2"/>
+        <path d="M 1460 530 L 1467 520"/>
+      </g>
+
+    </g>
+
+    <!-- ─────────────────────────────────────────────────────────
+         F.9 THORACIC SPINE — 12 vertebrae visible through the back, behind ribs.
+         Drawn faint to imply they sit on the far plane (occluded by ribs in front).
+         ───────────────────────────────────────────────────────── -->
+    <g id="thoracic-spine" stroke-width="0.55" opacity="0.55">
+      <ellipse cx="1486" cy="685" rx="13"   ry="4.5"/>
+      <ellipse cx="1487" cy="708" rx="14"   ry="5"/>
+      <ellipse cx="1488" cy="732" rx="14.5" ry="5"/>
+      <ellipse cx="1489" cy="757" rx="15"   ry="5.5"/>
+      <ellipse cx="1490" cy="783" rx="15.5" ry="5.5"/>
+      <ellipse cx="1490" cy="810" rx="16"   ry="6"/>
+      <ellipse cx="1490" cy="838" rx="16.5" ry="6"/>
+      <ellipse cx="1490" cy="867" rx="17"   ry="6.5"/>
+      <ellipse cx="1489" cy="896" rx="17.5" ry="6.5"/>
+      <ellipse cx="1488" cy="924" rx="18"   ry="7"/>
+      <ellipse cx="1487" cy="952" rx="18.5" ry="7"/>
+      <ellipse cx="1485" cy="980" rx="19"   ry="7"/>
+      <g stroke-width="0.4" opacity="0.5">
+        <line x1="1486" y1="690" x2="1478" y2="693"/>
+        <line x1="1487" y1="713" x2="1478" y2="716"/>
+        <line x1="1488" y1="737" x2="1479" y2="740"/>
+        <line x1="1489" y1="762" x2="1479" y2="765"/>
+        <line x1="1490" y1="788" x2="1480" y2="791"/>
+        <line x1="1490" y1="815" x2="1480" y2="818"/>
+        <line x1="1490" y1="843" x2="1480" y2="846"/>
+        <line x1="1490" y1="873" x2="1480" y2="876"/>
+        <line x1="1489" y1="902" x2="1478" y2="905"/>
+        <line x1="1488" y1="930" x2="1477" y2="933"/>
+        <line x1="1487" y1="958" x2="1476" y2="961"/>
+        <line x1="1485" y1="987" x2="1473" y2="990"/>
+      </g>
+      <g stroke-width="0.35" opacity="0.45">
+        <line x1="1474" y1="685" x2="1469" y2="685"/>
+        <line x1="1498" y1="685" x2="1503" y2="685"/>
+        <line x1="1475" y1="732" x2="1469" y2="732"/>
+        <line x1="1501" y1="732" x2="1507" y2="732"/>
+        <line x1="1474" y1="783" x2="1467" y2="783"/>
+        <line x1="1506" y1="783" x2="1513" y2="783"/>
+        <line x1="1474" y1="838" x2="1466" y2="838"/>
+        <line x1="1506" y1="838" x2="1514" y2="838"/>
+        <line x1="1472" y1="896" x2="1464" y2="896"/>
+        <line x1="1506" y1="896" x2="1514" y2="896"/>
+        <line x1="1469" y1="952" x2="1461" y2="952"/>
+        <line x1="1505" y1="952" x2="1513" y2="952"/>
+      </g>
+    </g>
+
+    <!-- F.10 SCAPULA EXTRAS — lateral border + acromion + glenoid + coracoid -->
+    <g id="scapula-extras" stroke-width="0.65" opacity="0.7">
+      <path d="M 1305 905 C 1322 875, 1335 825, 1340 775 L 1335 738" stroke-width="0.7"/>
+      <circle cx="1290" cy="728" r="3.5" stroke-width="0.6"/>
+      <path d="M 1286 725 L 1294 731" stroke-width="0.45"/>
+      <ellipse cx="1335" cy="772" rx="5" ry="3.5" stroke-width="0.55" opacity="0.75"/>
+      <path d="M 1318 738 C 1322 732, 1328 730, 1334 731" stroke-width="0.45" opacity="0.6"/>
+      <circle cx="1305" cy="905" r="1.8" stroke-width="0.4" opacity="0.65"/>
+    </g>
+
+    <!-- F.11 FLOATING RIBS — pairs 10-12 (the short floating ribs) -->
+    <g id="floating-ribs">
+      <g stroke-width="0.55" opacity="0.6">
+        <path d="M 1473 938 C 1510 950, 1555 970, 1590 995"/>
+        <path d="M 1468 958 C 1500 970, 1538 985, 1568 1008" stroke-width="0.5" opacity="0.55"/>
+        <path d="M 1463 978 C 1488 985, 1518 998, 1542 1020" stroke-width="0.45" opacity="0.5"/>
+      </g>
+      <g stroke-width="0.5" opacity="0.55">
+        <path d="M 1450 918 C 1395 928, 1342 948, 1308 970"/>
+        <path d="M 1445 938 C 1395 948, 1348 965, 1318 985" stroke-width="0.45" opacity="0.5"/>
+        <path d="M 1440 958 C 1395 968, 1352 982, 1325 1000" stroke-width="0.4" opacity="0.45"/>
+        <path d="M 1435 978 C 1395 985, 1358 998, 1335 1015" stroke-width="0.35" opacity="0.4"/>
+      </g>
+    </g>
+
+    <!-- F.12 HYOID BONE — small horseshoe bone at throat -->
+    <g id="hyoid" stroke-width="0.55" opacity="0.72">
+      <path d="M 1462 514 C 1465 511, 1470 510, 1476 510 L 1488 510 C 1494 510, 1498 511, 1500 514" fill="none"/>
+      <path d="M 1462 514 C 1458 517, 1454 521, 1452 524" stroke-width="0.45"/>
+      <path d="M 1500 514 C 1504 517, 1508 521, 1510 524" stroke-width="0.45"/>
+      <line x1="1470" y1="510" x2="1469" y2="506" stroke-width="0.4"/>
+      <line x1="1493" y1="510" x2="1494" y2="506" stroke-width="0.4"/>
+    </g>
+
+    <!-- F.13 ILIAC CREST + PELVIS HINT — top edge of pelvis at canvas bottom -->
+    <g id="pelvis-hint" stroke-width="0.65" opacity="0.7">
+      <path d="M 1278 1058 C 1335 1018, 1410 1000, 1500 998 C 1595 1002, 1675 1018, 1735 1050" stroke-width="0.75"/>
+      <circle cx="1500" cy="999" r="1.5" stroke-width="0.4" opacity="0.6"/>
+      <line x1="1330" y1="1020" x2="1325" y2="1028" stroke-width="0.4" opacity="0.55"/>
+      <line x1="1685" y1="1022" x2="1690" y2="1030" stroke-width="0.4" opacity="0.55"/>
+      <path d="M 1465 1015 C 1475 1025, 1485 1040, 1488 1060" stroke-width="0.4" opacity="0.5"/>
+      <path d="M 1500 1015 C 1502 1025, 1500 1040, 1495 1060" stroke-width="0.4" opacity="0.5"/>
+    </g>
+
+  </g>
+
+  <!-- ============================================================
+       LAYER G · CROSS-CONTOUR DEPTH  (new this pass — the big density jump)
+       CAD-style isolines wrapping every form. Density gradient: tight where
+       forms turn (jaw, cheek, shoulder edge, knuckles), sparse on flat planes.
+       Stroke 0.28-0.5, opacity 0.32-0.55 — meant to RECEDE behind the bone
+       lines, providing topology weight without competing.
+       ============================================================ -->
+  <g id="depth-contours" stroke="#0A0A0A" fill="none"
+     stroke-linecap="round" stroke-linejoin="round">
+
+    <!-- ─────────────────────────────────────────────────────────
+         G.1 HEAD — meridians (vertical wraps) + parallels (horizontal cross-sections)
+         The head reads as an ellipsoid mesh; the existing face features sit on top.
+         ───────────────────────────────────────────────────────── -->
+    <g id="head-meridians" stroke-width="0.32" opacity="0.42">
+      <!-- M2: just inside profile silhouette, cheek-curve plane -->
+      <path d="M 1610 222 C 1612 270, 1614 320, 1615 360 C 1615 400, 1612 440, 1605 478"/>
+      <!-- M3: cheekbone meridian — over the visible cheek mass -->
+      <path d="M 1592 232 C 1594 280, 1594 330, 1593 380 C 1591 425, 1585 460, 1577 478"/>
+      <!-- M4: mid-face meridian (between cheek and ear) -->
+      <path d="M 1570 240 C 1572 290, 1572 340, 1568 390 C 1562 432, 1552 465, 1545 480"/>
+      <!-- M5: above-ear meridian -->
+      <path d="M 1543 245 C 1546 295, 1545 345, 1538 392 C 1530 432, 1520 462, 1510 478"/>
+      <!-- M6: through ear axis (slightly tilted back) -->
+      <path d="M 1520 250 C 1522 300, 1519 348, 1512 395 C 1503 430, 1492 458, 1482 478"/>
+      <!-- M7: back-of-ear meridian — partially behind hair -->
+      <path d="M 1495 232 C 1496 285, 1493 335, 1485 385 C 1475 425, 1462 455, 1450 478"/>
+      <!-- M8: back of head — mostly under hair, faint -->
+      <path d="M 1465 225 C 1464 280, 1460 333, 1452 385 C 1440 425, 1425 452, 1415 470"
+            opacity="0.32"/>
+      <!-- M9: deepest visible — even further back -->
+      <path d="M 1430 240 C 1428 295, 1422 345, 1412 395 C 1398 432, 1382 455, 1372 472"
+            opacity="0.32"/>
+      <!-- M10: temple curve coming forward over forehead -->
+      <path d="M 1530 218 C 1545 235, 1568 255, 1590 280 C 1605 297, 1614 312, 1620 322"
+            opacity="0.4"/>
+    </g>
+
+    <g id="head-parallels" stroke-width="0.3" opacity="0.4">
+      <!-- P1: above hairline (subtle crown arc) -->
+      <path d="M 1438 200 C 1465 192, 1500 191, 1535 195 C 1565 200, 1585 207, 1598 215"/>
+      <!-- P2: hairline arc -->
+      <path d="M 1418 230 C 1450 218, 1490 214, 1530 218 C 1565 222, 1590 230, 1602 240"/>
+      <!-- P3: between hairline and brow -->
+      <path d="M 1428 270 C 1460 258, 1500 254, 1540 258 C 1575 264, 1600 274, 1614 285"/>
+      <!-- P4: above brow -->
+      <path d="M 1434 295 C 1465 285, 1505 282, 1545 287 C 1580 293, 1605 303, 1620 313"/>
+      <!-- P5: just above eye -->
+      <path d="M 1432 332 C 1465 322, 1505 319, 1545 322 C 1580 328, 1605 336, 1620 345"/>
+      <!-- P6: between eye and nose -->
+      <path d="M 1430 370 C 1462 362, 1502 358, 1542 360 C 1578 365, 1605 373, 1623 382"/>
+      <!-- P7: nose level (mid) -->
+      <path d="M 1432 395 C 1464 388, 1500 384, 1538 386 C 1575 391, 1605 400, 1625 408"/>
+      <!-- P8: under nose / philtrum -->
+      <path d="M 1438 415 C 1468 408, 1502 405, 1538 408 C 1573 414, 1600 422, 1615 428"/>
+      <!-- P9: between lip and chin -->
+      <path d="M 1448 448 C 1475 442, 1505 440, 1535 443 C 1568 448, 1593 454, 1605 458"/>
+      <!-- P10: chin level -->
+      <path d="M 1462 475 C 1485 472, 1510 470, 1538 472 C 1568 475, 1592 482, 1605 487"/>
+      <!-- P11: under chin (start of jawline reach) -->
+      <path d="M 1480 498 C 1502 495, 1528 493, 1555 495 C 1575 498, 1590 502, 1595 506"/>
+    </g>
+
+    <!-- ─────────────────────────────────────────────────────────
+         G.2 NECK — additional cross-sections + helical wraps
+         The neck becomes a clearly readable cylinder.
+         ───────────────────────────────────────────────────────── -->
+    <g id="neck-contours" stroke-width="0.32" opacity="0.45">
+      <!-- Additional cross-section ellipses between existing ones -->
+      <ellipse cx="1481" cy="530" rx="33" ry="8.5"/>
+      <ellipse cx="1481" cy="550" rx="34" ry="8.8"/>
+      <ellipse cx="1481" cy="570" rx="35" ry="9"/>
+      <ellipse cx="1483" cy="615" rx="38" ry="9.5"/>
+      <ellipse cx="1483" cy="640" rx="40" ry="10"/>
+      <ellipse cx="1484" cy="665" rx="42" ry="10.5"/>
+
+      <!-- Vertical meridians wrapping neck cylinder (front + back) -->
+      <path d="M 1465 510 C 1462 580, 1460 645, 1462 685" opacity="0.4"/>
+      <path d="M 1495 510 C 1498 580, 1502 645, 1503 685" opacity="0.4"/>
+      <!-- Diagonal helical line (suggests spiral wrap, partial only) -->
+      <path d="M 1450 525 C 1470 555, 1495 590, 1510 625" opacity="0.32"/>
+    </g>
+
+    <!-- ─────────────────────────────────────────────────────────
+         G.3 SHOULDER + UPPER TORSO — domed arcs + diagonal stress lines
+         ───────────────────────────────────────────────────────── -->
+    <g id="shoulder-contours" stroke-width="0.32" opacity="0.4">
+      <!-- 4 horizontal arcs across shoulder dome at different heights -->
+      <path d="M 1300 728 C 1380 712, 1465 706, 1540 712 C 1620 720, 1680 725, 1700 730"/>
+      <path d="M 1290 745 C 1380 728, 1465 722, 1540 728 C 1620 738, 1685 743, 1705 748"/>
+      <path d="M 1283 760 C 1378 745, 1465 740, 1540 745 C 1620 753, 1690 758, 1710 762"/>
+      <path d="M 1276 775 C 1378 762, 1465 758, 1540 762 C 1620 770, 1695 775, 1715 778"/>
+
+      <!-- Vertical curves running down shoulder ridge from neck base -->
+      <path d="M 1390 715 C 1380 760, 1372 810, 1365 870"/>
+      <path d="M 1460 698 C 1462 750, 1465 815, 1468 880"/>
+      <path d="M 1545 700 C 1556 760, 1572 820, 1590 880"/>
+      <path d="M 1610 712 C 1625 770, 1645 830, 1670 890"/>
+
+      <!-- Diagonal cross-contours from shoulder seam toward armpit -->
+      <path d="M 1330 760 C 1350 790, 1370 818, 1395 845" opacity="0.35"/>
+      <path d="M 1650 735 C 1665 770, 1680 805, 1695 838" opacity="0.35"/>
+    </g>
+
+    <!-- ─────────────────────────────────────────────────────────
+         G.4 FOREARM — additional cross-rings + medial/lateral meridians
+         Builds on Pass 04's 4 existing rings.
+         ───────────────────────────────────────────────────────── -->
+    <g id="forearm-contours" stroke-width="0.3" opacity="0.5">
+      <!-- Additional cross-contour rings between existing ones -->
+      <path d="M 1320 750 C 1313 757, 1308 761, 1306 763"/>
+      <path d="M 1345 712 C 1338 720, 1333 724, 1330 726"/>
+      <path d="M 1360 690 C 1352 697, 1347 701, 1344 703"/>
+      <path d="M 1395 640 C 1387 647, 1382 651, 1379 653"/>
+      <path d="M 1420 605 C 1413 612, 1408 616, 1405 618"/>
+
+      <!-- Medial meridian (along the inner forearm axis) -->
+      <path d="M 1302 776 C 1340 715, 1378 658, 1415 615 C 1430 600, 1438 595, 1442 592"
+            opacity="0.4"/>
+      <!-- Lateral meridian (along the outer forearm axis) -->
+      <path d="M 1313 758 C 1348 700, 1383 645, 1418 605 C 1432 588, 1442 580, 1448 578"
+            opacity="0.4"/>
+    </g>
+
+    <!-- ─────────────────────────────────────────────────────────
+         G.5 HAND BACK — cross-sections at knuckle/mid/wrist + finger wraps
+         ───────────────────────────────────────────────────────── -->
+    <g id="hand-contours" stroke-width="0.3" opacity="0.5">
+      <!-- Cross-sections across the back of hand -->
+      <path d="M 1462 510 C 1458 511, 1454 513, 1451 514"/>
+      <path d="M 1462 530 C 1458 532, 1454 534, 1450 535"/>
+      <path d="M 1460 550 C 1456 552, 1452 553, 1449 554"/>
+      <path d="M 1457 570 C 1453 572, 1449 573, 1446 574"/>
+
+      <!-- Finger cross-wraps — small contour bands around each finger -->
+      <!-- Index -->
+      <path d="M 1468 495 Q 1470 497, 1473 499" opacity="0.45"/>
+      <path d="M 1478 485 Q 1480 487, 1482 489" opacity="0.45"/>
+      <!-- Middle -->
+      <path d="M 1470 504 Q 1472 506, 1475 508" opacity="0.45"/>
+      <path d="M 1480 494 Q 1482 496, 1485 498" opacity="0.45"/>
+      <!-- Ring -->
+      <path d="M 1471 512 Q 1473 514, 1476 516" opacity="0.45"/>
+      <path d="M 1481 503 Q 1483 505, 1485 507" opacity="0.45"/>
+      <!-- Pinky -->
+      <path d="M 1467 522 Q 1469 524, 1471 526" opacity="0.45"/>
+      <path d="M 1474 515 Q 1476 517, 1478 519" opacity="0.45"/>
+      <!-- Thumb -->
+      <path d="M 1458 535 Q 1460 537, 1462 539" opacity="0.45"/>
+    </g>
+
+    <!-- ─────────────────────────────────────────────────────────
+         G.6 TORSO — vertical meridians running from shoulder to canvas bottom
+         Complements the horizontal knit rows from Pass 05 (which gave the
+         horizontal cross-sections). Now we have both axes — true mesh wireframe.
+         ───────────────────────────────────────────────────────── -->
+    <g id="torso-meridians" stroke-width="0.3" opacity="0.4">
+      <!-- 6 vertical curves following the body's slight outward taper -->
+      <path d="M 1330 790 C 1320 880, 1305 970, 1290 1070"/>
+      <path d="M 1380 790 C 1374 880, 1366 970, 1358 1070"/>
+      <path d="M 1430 790 C 1430 880, 1430 970, 1428 1070"/>
+      <path d="M 1530 790 C 1535 880, 1542 970, 1548 1070"/>
+      <path d="M 1590 790 C 1602 880, 1618 970, 1632 1070"/>
+      <path d="M 1650 790 C 1665 880, 1685 970, 1705 1070"/>
+    </g>
+
+  </g>
+
+  <!-- ============================================================
+       LAYER H · COMPOSITION ARCHITECTURE  (new this pass)
+       Anchors the vast negative space so it reads as deliberate, not blank.
+       Floor / horizon line, scale bar, datum labels, drawing reference block,
+       composition rhyme markers, edge dimensional callouts. Architectural
+       drafting register — all thin black ink, all letterspaced monospace.
+       ============================================================ -->
+  <g id="composition-architecture" stroke="#0A0A0A" fill="none"
+     stroke-linecap="round" stroke-linejoin="round">
+
+    <!-- ─────────────────────────────────────────────────────────
+         H.1 FLOOR / HORIZON LINE — implies the gallery plinth.
+         Dashed, faint, runs the full width of canvas.
+         ───────────────────────────────────────────────────────── -->
+    <line x1="40" y1="920" x2="1880" y2="920"
+          stroke-width="0.4" opacity="0.4"
+          stroke-dasharray="6 8"/>
+
+    <!-- Secondary horizon (slight echo, even fainter) -->
+    <line x1="40" y1="935" x2="1880" y2="935"
+          stroke-width="0.3" opacity="0.22"
+          stroke-dasharray="3 6"/>
+
+    <!-- Horizon-line annotation tick + label -->
+    <g stroke-width="0.4" opacity="0.55">
+      <line x1="100" y1="912" x2="100" y2="928"/>
+    </g>
+
+    <!-- ─────────────────────────────────────────────────────────
+         H.2 SCALE BAR — bottom-left, architectural reference.
+         200 SVG units = "1m" (notional). 10 sub-divisions.
+         ───────────────────────────────────────────────────────── -->
+    <g id="scale-bar" stroke-width="0.5" opacity="0.7">
+      <!-- Baseline -->
+      <line x1="100" y1="970" x2="300" y2="970"/>
+      <!-- Major end ticks (taller) -->
+      <line x1="100" y1="962" x2="100" y2="978"/>
+      <line x1="300" y1="962" x2="300" y2="978"/>
+      <!-- Center tick (medium) -->
+      <line x1="200" y1="964" x2="200" y2="976"/>
+      <!-- Minor ticks (shorter) -->
+      <line x1="120" y1="968" x2="120" y2="972"/>
+      <line x1="140" y1="968" x2="140" y2="972"/>
+      <line x1="160" y1="968" x2="160" y2="972"/>
+      <line x1="180" y1="968" x2="180" y2="972"/>
+      <line x1="220" y1="968" x2="220" y2="972"/>
+      <line x1="240" y1="968" x2="240" y2="972"/>
+      <line x1="260" y1="968" x2="260" y2="972"/>
+      <line x1="280" y1="968" x2="280" y2="972"/>
+    </g>
+    <g stroke="none" fill="#0A0A0A">
+      <text x="96" y="990" font-size="12" opacity="0.55" letter-spacing="0.18em">0</text>
+      <text x="190" y="990" font-size="12" opacity="0.55" letter-spacing="0.18em">50</text>
+      <text x="287" y="990" font-size="12" opacity="0.55" letter-spacing="0.18em">100 CM</text>
+    </g>
+
+    <!-- ─────────────────────────────────────────────────────────
+         H.3 DATUM LINES + LABELS — eye-level extended, vertical 1/3 line marked
+         ───────────────────────────────────────────────────────── -->
+
+    <!-- Eye-line datum label (rides on the existing y=350 dashed line) -->
+    <g stroke="none" fill="#0A0A0A">
+      <text x="90" y="346" font-size="12" opacity="0.55" letter-spacing="0.2em">
+        EYE LINE · DATUM 00
+      </text>
+      <text x="1782" y="346" font-size="12" opacity="0.4" letter-spacing="0.2em">±0.000</text>
+    </g>
+
+    <!-- Vertical 1/3 line (left composition rhyme — golden section in 16:9) -->
+    <line x1="640" y1="40" x2="640" y2="1040"
+          stroke-width="0.3" opacity="0.18"
+          stroke-dasharray="6 8"/>
+    <g stroke="none" fill="#0A0A0A">
+      <text x="612" y="36" font-size="12" opacity="0.5" letter-spacing="0.2em">⅓</text>
+    </g>
+
+    <!-- Subject-anchor crosshair label (small annotation at the head center) -->
+    <g stroke="none" fill="#0A0A0A">
+      <text x="1500" y="346" font-size="12" opacity="0.55" letter-spacing="0.18em">
+        SUBJECT · ANCHOR
+      </text>
+    </g>
+
+    <!-- ─────────────────────────────────────────────────────────
+         H.4 DRAWING REFERENCE BLOCK — top-left corner.
+         Architectural-draft register: title, sheet, scale, date.
+         ───────────────────────────────────────────────────────── -->
+    <g stroke="none" fill="#0A0A0A" opacity="0.65">
+      <text x="100" y="105" font-size="12" letter-spacing="0.22em">
+        PROFILE, THROUGH
+      </text>
+      <text x="100" y="120" font-size="12" letter-spacing="0.2em" opacity="0.85">
+        SURFACE + INTERIOR · DRAFTED 2026
+      </text>
+    </g>
+    <g stroke="none" fill="#0A0A0A" opacity="0.55">
+      <text x="100" y="146" font-size="12" letter-spacing="0.18em">SHEET · 01 / 01</text>
+      <text x="100" y="160" font-size="12" letter-spacing="0.18em">SCALE · 1 : 1</text>
+      <text x="100" y="174" font-size="12" letter-spacing="0.18em">PROJ · ART BASEL</text>
+    </g>
+
+    <!-- ─────────────────────────────────────────────────────────
+         H.5 COMPOSITION RHYME MARKERS — tiny "+" at golden intersections
+         ───────────────────────────────────────────────────────── -->
+    <g stroke-width="0.4" opacity="0.4">
+      <!-- Upper-left golden intersection -->
+      <line x1="632" y1="410" x2="648" y2="410"/>
+      <line x1="640" y1="402" x2="640" y2="418"/>
+      <!-- Lower-left golden intersection -->
+      <line x1="632" y1="670" x2="648" y2="670"/>
+      <line x1="640" y1="662" x2="640" y2="678"/>
+      <!-- Lower-right golden intersection (in subject zone) -->
+      <line x1="1272" y1="670" x2="1288" y2="670"/>
+      <line x1="1280" y1="662" x2="1280" y2="678"/>
+    </g>
+
+    <!-- ─────────────────────────────────────────────────────────
+         H.6 EDGE DIMENSIONAL CALLOUTS — tiny canvas measurements at edges
+         ───────────────────────────────────────────────────────── -->
+    <g id="canvas-dims" stroke-width="0.35" opacity="0.5">
+      <!-- Bottom edge: width callout -->
+      <line x1="100" y1="1050" x2="105" y2="1050"/>
+      <line x1="100" y1="1046" x2="100" y2="1054"/>
+      <line x1="1815" y1="1046" x2="1815" y2="1054"/>
+      <line x1="1810" y1="1050" x2="1815" y2="1050"/>
+      <!-- Long dimension arrow shaft between -->
+      <line x1="115" y1="1050" x2="290" y2="1050" stroke-dasharray="2 4"/>
+      <line x1="380" y1="1050" x2="1800" y2="1050" stroke-dasharray="2 4"/>
+    </g>
+    <g stroke="none" fill="#0A0A0A">
+      <text x="312" y="1054" font-size="12" opacity="0.55" letter-spacing="0.2em">
+        1920 · CANVAS WIDTH
+      </text>
+    </g>
+
+    <!-- Right edge: height callout -->
+    <g stroke-width="0.35" opacity="0.5">
+      <line x1="1840" y1="60" x2="1844" y2="60"/>
+      <line x1="1840" y1="55" x2="1840" y2="65"/>
+      <line x1="1840" y1="1015" x2="1844" y2="1015"/>
+      <line x1="1840" y1="1010" x2="1840" y2="1020"/>
+      <line x1="1840" y1="75" x2="1840" y2="500" stroke-dasharray="2 4"/>
+      <line x1="1840" y1="600" x2="1840" y2="1000" stroke-dasharray="2 4"/>
+    </g>
+    <g stroke="none" fill="#0A0A0A">
+      <text x="1834" y="555" font-size="12" opacity="0.55" letter-spacing="0.2em"
+            transform="rotate(-90 1834 555)">
+        1080 · CANVAS HEIGHT
+      </text>
+    </g>
+
+    <!-- ─────────────────────────────────────────────────────────
+         H.7 BACKGROUND PUNCTUATION — sparse small marks in negative space
+         Subtle rhythm anchors. Few in number — the void stays the point.
+         ───────────────────────────────────────────────────────── -->
+    <g stroke-width="0.35" opacity="0.32">
+      <!-- Small registration dots at quiet positions in the negative space -->
+      <circle cx="320" cy="540" r="1.4" fill="#0A0A0A" stroke="none"/>
+      <circle cx="800" cy="540" r="1.4" fill="#0A0A0A" stroke="none"/>
+      <circle cx="320" cy="350" r="1.2" fill="#0A0A0A" stroke="none"/>
+      <circle cx="320" cy="730" r="1.2" fill="#0A0A0A" stroke="none"/>
+      <circle cx="960" cy="350" r="1.2" fill="#0A0A0A" stroke="none"/>
+      <circle cx="960" cy="730" r="1.2" fill="#0A0A0A" stroke="none"/>
+    </g>
+
+    <!-- ─────────────────────────────────────────────────────────
+         H.8 SUBJECT VIEW VECTOR — single faint line implying the subject's
+         gaze direction (off-canvas right). Very subtle.
+         ───────────────────────────────────────────────────────── -->
+    <g stroke-width="0.3" opacity="0.3" stroke-dasharray="3 6">
+      <!-- Originates at the eye position, exits canvas at right edge -->
+      <line x1="1605" y1="350" x2="1880" y2="335"/>
+    </g>
+    <g stroke="none" fill="#0A0A0A">
+      <text x="1750" y="324" font-size="12" opacity="0.45" letter-spacing="0.22em">
+        SIGHT VECTOR
+      </text>
+    </g>
+
+  </g>
+
+  <!-- ============================================================
+       LAYER F+ · SWEATER (overlay)   in Pass 12 — sits ON TOP of the skeleton (Layer F-)
        The wireframe becomes fabric. Collar + shoulder seam + knit rows
        (horizontal arcs that imply 3D form, foreshadowing Pass 06's cross-
        contours) + vertical yarn-column ticks + raw distressed cuff +
@@ -767,354 +1610,6 @@
 
   </g>
 
-  <!-- ============================================================
-       LAYER G · CROSS-CONTOUR DEPTH  (new this pass — the big density jump)
-       CAD-style isolines wrapping every form. Density gradient: tight where
-       forms turn (jaw, cheek, shoulder edge, knuckles), sparse on flat planes.
-       Stroke 0.28-0.5, opacity 0.32-0.55 — meant to RECEDE behind the bone
-       lines, providing topology weight without competing.
-       ============================================================ -->
-  <g id="depth-contours" stroke="#0A0A0A" fill="none"
-     stroke-linecap="round" stroke-linejoin="round">
-
-    <!-- ─────────────────────────────────────────────────────────
-         G.1 HEAD — meridians (vertical wraps) + parallels (horizontal cross-sections)
-         The head reads as an ellipsoid mesh; the existing face features sit on top.
-         ───────────────────────────────────────────────────────── -->
-    <g id="head-meridians" stroke-width="0.32" opacity="0.42">
-      <!-- M2: just inside profile silhouette, cheek-curve plane -->
-      <path d="M 1610 222 C 1612 270, 1614 320, 1615 360 C 1615 400, 1612 440, 1605 478"/>
-      <!-- M3: cheekbone meridian — over the visible cheek mass -->
-      <path d="M 1592 232 C 1594 280, 1594 330, 1593 380 C 1591 425, 1585 460, 1577 478"/>
-      <!-- M4: mid-face meridian (between cheek and ear) -->
-      <path d="M 1570 240 C 1572 290, 1572 340, 1568 390 C 1562 432, 1552 465, 1545 480"/>
-      <!-- M5: above-ear meridian -->
-      <path d="M 1543 245 C 1546 295, 1545 345, 1538 392 C 1530 432, 1520 462, 1510 478"/>
-      <!-- M6: through ear axis (slightly tilted back) -->
-      <path d="M 1520 250 C 1522 300, 1519 348, 1512 395 C 1503 430, 1492 458, 1482 478"/>
-      <!-- M7: back-of-ear meridian — partially behind hair -->
-      <path d="M 1495 232 C 1496 285, 1493 335, 1485 385 C 1475 425, 1462 455, 1450 478"/>
-      <!-- M8: back of head — mostly under hair, faint -->
-      <path d="M 1465 225 C 1464 280, 1460 333, 1452 385 C 1440 425, 1425 452, 1415 470"
-            opacity="0.32"/>
-      <!-- M9: deepest visible — even further back -->
-      <path d="M 1430 240 C 1428 295, 1422 345, 1412 395 C 1398 432, 1382 455, 1372 472"
-            opacity="0.32"/>
-      <!-- M10: temple curve coming forward over forehead -->
-      <path d="M 1530 218 C 1545 235, 1568 255, 1590 280 C 1605 297, 1614 312, 1620 322"
-            opacity="0.4"/>
-    </g>
-
-    <g id="head-parallels" stroke-width="0.3" opacity="0.4">
-      <!-- P1: above hairline (subtle crown arc) -->
-      <path d="M 1438 200 C 1465 192, 1500 191, 1535 195 C 1565 200, 1585 207, 1598 215"/>
-      <!-- P2: hairline arc -->
-      <path d="M 1418 230 C 1450 218, 1490 214, 1530 218 C 1565 222, 1590 230, 1602 240"/>
-      <!-- P3: between hairline and brow -->
-      <path d="M 1428 270 C 1460 258, 1500 254, 1540 258 C 1575 264, 1600 274, 1614 285"/>
-      <!-- P4: above brow -->
-      <path d="M 1434 295 C 1465 285, 1505 282, 1545 287 C 1580 293, 1605 303, 1620 313"/>
-      <!-- P5: just above eye -->
-      <path d="M 1432 332 C 1465 322, 1505 319, 1545 322 C 1580 328, 1605 336, 1620 345"/>
-      <!-- P6: between eye and nose -->
-      <path d="M 1430 370 C 1462 362, 1502 358, 1542 360 C 1578 365, 1605 373, 1623 382"/>
-      <!-- P7: nose level (mid) -->
-      <path d="M 1432 395 C 1464 388, 1500 384, 1538 386 C 1575 391, 1605 400, 1625 408"/>
-      <!-- P8: under nose / philtrum -->
-      <path d="M 1438 415 C 1468 408, 1502 405, 1538 408 C 1573 414, 1600 422, 1615 428"/>
-      <!-- P9: between lip and chin -->
-      <path d="M 1448 448 C 1475 442, 1505 440, 1535 443 C 1568 448, 1593 454, 1605 458"/>
-      <!-- P10: chin level -->
-      <path d="M 1462 475 C 1485 472, 1510 470, 1538 472 C 1568 475, 1592 482, 1605 487"/>
-      <!-- P11: under chin (start of jawline reach) -->
-      <path d="M 1480 498 C 1502 495, 1528 493, 1555 495 C 1575 498, 1590 502, 1595 506"/>
-    </g>
-
-    <!-- ─────────────────────────────────────────────────────────
-         G.2 NECK — additional cross-sections + helical wraps
-         The neck becomes a clearly readable cylinder.
-         ───────────────────────────────────────────────────────── -->
-    <g id="neck-contours" stroke-width="0.32" opacity="0.45">
-      <!-- Additional cross-section ellipses between existing ones -->
-      <ellipse cx="1481" cy="530" rx="33" ry="8.5"/>
-      <ellipse cx="1481" cy="550" rx="34" ry="8.8"/>
-      <ellipse cx="1481" cy="570" rx="35" ry="9"/>
-      <ellipse cx="1483" cy="615" rx="38" ry="9.5"/>
-      <ellipse cx="1483" cy="640" rx="40" ry="10"/>
-      <ellipse cx="1484" cy="665" rx="42" ry="10.5"/>
-
-      <!-- Vertical meridians wrapping neck cylinder (front + back) -->
-      <path d="M 1465 510 C 1462 580, 1460 645, 1462 685" opacity="0.4"/>
-      <path d="M 1495 510 C 1498 580, 1502 645, 1503 685" opacity="0.4"/>
-      <!-- Diagonal helical line (suggests spiral wrap, partial only) -->
-      <path d="M 1450 525 C 1470 555, 1495 590, 1510 625" opacity="0.32"/>
-    </g>
-
-    <!-- ─────────────────────────────────────────────────────────
-         G.3 SHOULDER + UPPER TORSO — domed arcs + diagonal stress lines
-         ───────────────────────────────────────────────────────── -->
-    <g id="shoulder-contours" stroke-width="0.32" opacity="0.4">
-      <!-- 4 horizontal arcs across shoulder dome at different heights -->
-      <path d="M 1300 728 C 1380 712, 1465 706, 1540 712 C 1620 720, 1680 725, 1700 730"/>
-      <path d="M 1290 745 C 1380 728, 1465 722, 1540 728 C 1620 738, 1685 743, 1705 748"/>
-      <path d="M 1283 760 C 1378 745, 1465 740, 1540 745 C 1620 753, 1690 758, 1710 762"/>
-      <path d="M 1276 775 C 1378 762, 1465 758, 1540 762 C 1620 770, 1695 775, 1715 778"/>
-
-      <!-- Vertical curves running down shoulder ridge from neck base -->
-      <path d="M 1390 715 C 1380 760, 1372 810, 1365 870"/>
-      <path d="M 1460 698 C 1462 750, 1465 815, 1468 880"/>
-      <path d="M 1545 700 C 1556 760, 1572 820, 1590 880"/>
-      <path d="M 1610 712 C 1625 770, 1645 830, 1670 890"/>
-
-      <!-- Diagonal cross-contours from shoulder seam toward armpit -->
-      <path d="M 1330 760 C 1350 790, 1370 818, 1395 845" opacity="0.35"/>
-      <path d="M 1650 735 C 1665 770, 1680 805, 1695 838" opacity="0.35"/>
-    </g>
-
-    <!-- ─────────────────────────────────────────────────────────
-         G.4 FOREARM — additional cross-rings + medial/lateral meridians
-         Builds on Pass 04's 4 existing rings.
-         ───────────────────────────────────────────────────────── -->
-    <g id="forearm-contours" stroke-width="0.3" opacity="0.5">
-      <!-- Additional cross-contour rings between existing ones -->
-      <path d="M 1320 750 C 1313 757, 1308 761, 1306 763"/>
-      <path d="M 1345 712 C 1338 720, 1333 724, 1330 726"/>
-      <path d="M 1360 690 C 1352 697, 1347 701, 1344 703"/>
-      <path d="M 1395 640 C 1387 647, 1382 651, 1379 653"/>
-      <path d="M 1420 605 C 1413 612, 1408 616, 1405 618"/>
-
-      <!-- Medial meridian (along the inner forearm axis) -->
-      <path d="M 1302 776 C 1340 715, 1378 658, 1415 615 C 1430 600, 1438 595, 1442 592"
-            opacity="0.4"/>
-      <!-- Lateral meridian (along the outer forearm axis) -->
-      <path d="M 1313 758 C 1348 700, 1383 645, 1418 605 C 1432 588, 1442 580, 1448 578"
-            opacity="0.4"/>
-    </g>
-
-    <!-- ─────────────────────────────────────────────────────────
-         G.5 HAND BACK — cross-sections at knuckle/mid/wrist + finger wraps
-         ───────────────────────────────────────────────────────── -->
-    <g id="hand-contours" stroke-width="0.3" opacity="0.5">
-      <!-- Cross-sections across the back of hand -->
-      <path d="M 1462 510 C 1458 511, 1454 513, 1451 514"/>
-      <path d="M 1462 530 C 1458 532, 1454 534, 1450 535"/>
-      <path d="M 1460 550 C 1456 552, 1452 553, 1449 554"/>
-      <path d="M 1457 570 C 1453 572, 1449 573, 1446 574"/>
-
-      <!-- Finger cross-wraps — small contour bands around each finger -->
-      <!-- Index -->
-      <path d="M 1468 495 Q 1470 497, 1473 499" opacity="0.45"/>
-      <path d="M 1478 485 Q 1480 487, 1482 489" opacity="0.45"/>
-      <!-- Middle -->
-      <path d="M 1470 504 Q 1472 506, 1475 508" opacity="0.45"/>
-      <path d="M 1480 494 Q 1482 496, 1485 498" opacity="0.45"/>
-      <!-- Ring -->
-      <path d="M 1471 512 Q 1473 514, 1476 516" opacity="0.45"/>
-      <path d="M 1481 503 Q 1483 505, 1485 507" opacity="0.45"/>
-      <!-- Pinky -->
-      <path d="M 1467 522 Q 1469 524, 1471 526" opacity="0.45"/>
-      <path d="M 1474 515 Q 1476 517, 1478 519" opacity="0.45"/>
-      <!-- Thumb -->
-      <path d="M 1458 535 Q 1460 537, 1462 539" opacity="0.45"/>
-    </g>
-
-    <!-- ─────────────────────────────────────────────────────────
-         G.6 TORSO — vertical meridians running from shoulder to canvas bottom
-         Complements the horizontal knit rows from Pass 05 (which gave the
-         horizontal cross-sections). Now we have both axes — true mesh wireframe.
-         ───────────────────────────────────────────────────────── -->
-    <g id="torso-meridians" stroke-width="0.3" opacity="0.4">
-      <!-- 6 vertical curves following the body's slight outward taper -->
-      <path d="M 1330 790 C 1320 880, 1305 970, 1290 1070"/>
-      <path d="M 1380 790 C 1374 880, 1366 970, 1358 1070"/>
-      <path d="M 1430 790 C 1430 880, 1430 970, 1428 1070"/>
-      <path d="M 1530 790 C 1535 880, 1542 970, 1548 1070"/>
-      <path d="M 1590 790 C 1602 880, 1618 970, 1632 1070"/>
-      <path d="M 1650 790 C 1665 880, 1685 970, 1705 1070"/>
-    </g>
-
-  </g>
-
-  <!-- ============================================================
-       LAYER H · COMPOSITION ARCHITECTURE  (new this pass)
-       Anchors the vast negative space so it reads as deliberate, not blank.
-       Floor / horizon line, scale bar, datum labels, drawing reference block,
-       composition rhyme markers, edge dimensional callouts. Architectural
-       drafting register — all thin black ink, all letterspaced monospace.
-       ============================================================ -->
-  <g id="composition-architecture" stroke="#0A0A0A" fill="none"
-     stroke-linecap="round" stroke-linejoin="round">
-
-    <!-- ─────────────────────────────────────────────────────────
-         H.1 FLOOR / HORIZON LINE — implies the gallery plinth.
-         Dashed, faint, runs the full width of canvas.
-         ───────────────────────────────────────────────────────── -->
-    <line x1="40" y1="920" x2="1880" y2="920"
-          stroke-width="0.4" opacity="0.4"
-          stroke-dasharray="6 8"/>
-
-    <!-- Secondary horizon (slight echo, even fainter) -->
-    <line x1="40" y1="935" x2="1880" y2="935"
-          stroke-width="0.3" opacity="0.22"
-          stroke-dasharray="3 6"/>
-
-    <!-- Horizon-line annotation tick + label -->
-    <g stroke-width="0.4" opacity="0.55">
-      <line x1="100" y1="912" x2="100" y2="928"/>
-    </g>
-
-    <!-- ─────────────────────────────────────────────────────────
-         H.2 SCALE BAR — bottom-left, architectural reference.
-         200 SVG units = "1m" (notional). 10 sub-divisions.
-         ───────────────────────────────────────────────────────── -->
-    <g id="scale-bar" stroke-width="0.5" opacity="0.7">
-      <!-- Baseline -->
-      <line x1="100" y1="970" x2="300" y2="970"/>
-      <!-- Major end ticks (taller) -->
-      <line x1="100" y1="962" x2="100" y2="978"/>
-      <line x1="300" y1="962" x2="300" y2="978"/>
-      <!-- Center tick (medium) -->
-      <line x1="200" y1="964" x2="200" y2="976"/>
-      <!-- Minor ticks (shorter) -->
-      <line x1="120" y1="968" x2="120" y2="972"/>
-      <line x1="140" y1="968" x2="140" y2="972"/>
-      <line x1="160" y1="968" x2="160" y2="972"/>
-      <line x1="180" y1="968" x2="180" y2="972"/>
-      <line x1="220" y1="968" x2="220" y2="972"/>
-      <line x1="240" y1="968" x2="240" y2="972"/>
-      <line x1="260" y1="968" x2="260" y2="972"/>
-      <line x1="280" y1="968" x2="280" y2="972"/>
-    </g>
-    <g stroke="none" fill="#0A0A0A">
-      <text x="96" y="990" font-size="12" opacity="0.55" letter-spacing="0.18em">0</text>
-      <text x="190" y="990" font-size="12" opacity="0.55" letter-spacing="0.18em">50</text>
-      <text x="287" y="990" font-size="12" opacity="0.55" letter-spacing="0.18em">100 CM</text>
-    </g>
-
-    <!-- ─────────────────────────────────────────────────────────
-         H.3 DATUM LINES + LABELS — eye-level extended, vertical 1/3 line marked
-         ───────────────────────────────────────────────────────── -->
-
-    <!-- Eye-line datum label (rides on the existing y=350 dashed line) -->
-    <g stroke="none" fill="#0A0A0A">
-      <text x="90" y="346" font-size="12" opacity="0.55" letter-spacing="0.2em">
-        EYE LINE · DATUM 00
-      </text>
-      <text x="1782" y="346" font-size="12" opacity="0.4" letter-spacing="0.2em">±0.000</text>
-    </g>
-
-    <!-- Vertical 1/3 line (left composition rhyme — golden section in 16:9) -->
-    <line x1="640" y1="40" x2="640" y2="1040"
-          stroke-width="0.3" opacity="0.18"
-          stroke-dasharray="6 8"/>
-    <g stroke="none" fill="#0A0A0A">
-      <text x="612" y="36" font-size="12" opacity="0.5" letter-spacing="0.2em">⅓</text>
-    </g>
-
-    <!-- Subject-anchor crosshair label (small annotation at the head center) -->
-    <g stroke="none" fill="#0A0A0A">
-      <text x="1500" y="346" font-size="12" opacity="0.55" letter-spacing="0.18em">
-        SUBJECT · ANCHOR
-      </text>
-    </g>
-
-    <!-- ─────────────────────────────────────────────────────────
-         H.4 DRAWING REFERENCE BLOCK — top-left corner.
-         Architectural-draft register: title, sheet, scale, date.
-         ───────────────────────────────────────────────────────── -->
-    <g stroke="none" fill="#0A0A0A" opacity="0.65">
-      <text x="100" y="105" font-size="12" letter-spacing="0.22em">
-        PROFILE, IN WIREFRAME
-      </text>
-      <text x="100" y="120" font-size="12" letter-spacing="0.2em" opacity="0.85">
-        STUDY · DRAFTED 2026
-      </text>
-    </g>
-    <g stroke="none" fill="#0A0A0A" opacity="0.55">
-      <text x="100" y="146" font-size="12" letter-spacing="0.18em">SHEET · 01 / 01</text>
-      <text x="100" y="160" font-size="12" letter-spacing="0.18em">SCALE · 1 : 1</text>
-      <text x="100" y="174" font-size="12" letter-spacing="0.18em">PROJ · ART BASEL</text>
-    </g>
-
-    <!-- ─────────────────────────────────────────────────────────
-         H.5 COMPOSITION RHYME MARKERS — tiny "+" at golden intersections
-         ───────────────────────────────────────────────────────── -->
-    <g stroke-width="0.4" opacity="0.4">
-      <!-- Upper-left golden intersection -->
-      <line x1="632" y1="410" x2="648" y2="410"/>
-      <line x1="640" y1="402" x2="640" y2="418"/>
-      <!-- Lower-left golden intersection -->
-      <line x1="632" y1="670" x2="648" y2="670"/>
-      <line x1="640" y1="662" x2="640" y2="678"/>
-      <!-- Lower-right golden intersection (in subject zone) -->
-      <line x1="1272" y1="670" x2="1288" y2="670"/>
-      <line x1="1280" y1="662" x2="1280" y2="678"/>
-    </g>
-
-    <!-- ─────────────────────────────────────────────────────────
-         H.6 EDGE DIMENSIONAL CALLOUTS — tiny canvas measurements at edges
-         ───────────────────────────────────────────────────────── -->
-    <g id="canvas-dims" stroke-width="0.35" opacity="0.5">
-      <!-- Bottom edge: width callout -->
-      <line x1="100" y1="1050" x2="105" y2="1050"/>
-      <line x1="100" y1="1046" x2="100" y2="1054"/>
-      <line x1="1815" y1="1046" x2="1815" y2="1054"/>
-      <line x1="1810" y1="1050" x2="1815" y2="1050"/>
-      <!-- Long dimension arrow shaft between -->
-      <line x1="115" y1="1050" x2="290" y2="1050" stroke-dasharray="2 4"/>
-      <line x1="380" y1="1050" x2="1800" y2="1050" stroke-dasharray="2 4"/>
-    </g>
-    <g stroke="none" fill="#0A0A0A">
-      <text x="312" y="1054" font-size="12" opacity="0.55" letter-spacing="0.2em">
-        1920 · CANVAS WIDTH
-      </text>
-    </g>
-
-    <!-- Right edge: height callout -->
-    <g stroke-width="0.35" opacity="0.5">
-      <line x1="1840" y1="60" x2="1844" y2="60"/>
-      <line x1="1840" y1="55" x2="1840" y2="65"/>
-      <line x1="1840" y1="1015" x2="1844" y2="1015"/>
-      <line x1="1840" y1="1010" x2="1840" y2="1020"/>
-      <line x1="1840" y1="75" x2="1840" y2="500" stroke-dasharray="2 4"/>
-      <line x1="1840" y1="600" x2="1840" y2="1000" stroke-dasharray="2 4"/>
-    </g>
-    <g stroke="none" fill="#0A0A0A">
-      <text x="1834" y="555" font-size="12" opacity="0.55" letter-spacing="0.2em"
-            transform="rotate(-90 1834 555)">
-        1080 · CANVAS HEIGHT
-      </text>
-    </g>
-
-    <!-- ─────────────────────────────────────────────────────────
-         H.7 BACKGROUND PUNCTUATION — sparse small marks in negative space
-         Subtle rhythm anchors. Few in number — the void stays the point.
-         ───────────────────────────────────────────────────────── -->
-    <g stroke-width="0.35" opacity="0.32">
-      <!-- Small registration dots at quiet positions in the negative space -->
-      <circle cx="320" cy="540" r="1.4" fill="#0A0A0A" stroke="none"/>
-      <circle cx="800" cy="540" r="1.4" fill="#0A0A0A" stroke="none"/>
-      <circle cx="320" cy="350" r="1.2" fill="#0A0A0A" stroke="none"/>
-      <circle cx="320" cy="730" r="1.2" fill="#0A0A0A" stroke="none"/>
-      <circle cx="960" cy="350" r="1.2" fill="#0A0A0A" stroke="none"/>
-      <circle cx="960" cy="730" r="1.2" fill="#0A0A0A" stroke="none"/>
-    </g>
-
-    <!-- ─────────────────────────────────────────────────────────
-         H.8 SUBJECT VIEW VECTOR — single faint line implying the subject's
-         gaze direction (off-canvas right). Very subtle.
-         ───────────────────────────────────────────────────────── -->
-    <g stroke-width="0.3" opacity="0.3" stroke-dasharray="3 6">
-      <!-- Originates at the eye position, exits canvas at right edge -->
-      <line x1="1605" y1="350" x2="1880" y2="335"/>
-    </g>
-    <g stroke="none" fill="#0A0A0A">
-      <text x="1750" y="324" font-size="12" opacity="0.45" letter-spacing="0.22em">
-        SIGHT VECTOR
-      </text>
-    </g>
-
-  </g>
 
   <!-- ============================================================
        LAYER I · FORENSIC ANNOTATIONS  (new this pass)
@@ -1335,7 +1830,7 @@
         HÄGG · 2026
       </text>
       <text x="1614" y="1014" font-size="12" opacity="0.55" letter-spacing="0.2em">
-        DWG · A.B / WIREFRAME-01
+        DWG · A.B / THROUGH-03
       </text>
     </g>
 
@@ -1379,10 +1874,10 @@
        ============================================================ -->
   <g id="signature" stroke="#0A0A0A" fill="#0A0A0A">
     <text x="60" y="1010" font-size="12" opacity="0.6" letter-spacing="0.22em">
-      PROFILE · IN WIREFRAME · STUDY 01
+      PROFILE · THROUGH · STUDY 03
     </text>
     <text x="60" y="1028" font-size="12" opacity="0.5" letter-spacing="0.18em">
-      HÄGG · 2026 · RENDERED IN BROWSER · CODE
+      HÄGG · 2026 · SURFACE FADES · SKELETON BENEATH
     </text>
   </g>
 
@@ -1404,7 +1899,8 @@
   if (reducedMotion) return;
 
   // Element lookups — these are the motion targets
-  var bodyIds  = ['figure-armature', 'depth-contours', 'hand-gesture', 'sweater'];
+  var bodyIds  = ['figure-armature', 'depth-contours', 'hand-gesture',
+                  'skeleton', 'sweater'];
   var headIds  = ['hair-envelope', 'head-armature', 'head-meridians',
                   'head-parallels', 'profile-lock', 'hair-strands'];
   var hairIds  = ['crown-spikes', 'top-back-fall', 'side-of-head',
@@ -1417,22 +1913,49 @@
   var hairEls = hairIds.map(function (id) { return document.getElementById(id); })
                        .filter(Boolean);
 
-  // Cursor parallax target — head tilts ±1.5° based on horizontal mouse position
+  // Cursor state — head tilt only. The X-RAY REVEAL is handled by CSS class
+  // toggles (body.peel / body.peel-lock), driven from the same mousemove
+  // listener. This decouples the reveal from the rAF loop so it works in
+  // reduced-motion mode + background tabs + any environment that suspends rAF.
   var targetTilt = 0;
   var currentTilt = 0;
 
+  // Torso center after the tighter crop/centering pass.
+  var TORSO_X = 0.52;
+  var TORSO_Y = 0.8;
+  var PEEL_RADIUS = 0.34;  // cursor within this normalized distance triggers reveal
+
+  function updateCursor (clientX, clientY) {
+    var nx = clientX / window.innerWidth - 0.5;
+    targetTilt = nx * 6;  // ±3° head rotation
+
+    // X-ray reveal: toggle body.peel based on cursor proximity to torso
+    var dx = (clientX / window.innerWidth) - TORSO_X;
+    var dy = (clientY / window.innerHeight) - TORSO_Y;
+    var dist = Math.sqrt(dx*dx + dy*dy);
+    if (dist < PEEL_RADIUS) {
+      document.body.classList.add('peel');
+    } else {
+      document.body.classList.remove('peel');
+    }
+  }
+
   document.addEventListener('mousemove', function (e) {
-    var x = e.clientX / window.innerWidth - 0.5;  // -0.5 to +0.5
-    targetTilt = x * 6;                            // ±3° head rotation
+    updateCursor(e.clientX, e.clientY);
   });
 
-  // Touch parallax — first touch position acts as cursor on mobile
   document.addEventListener('touchmove', function (e) {
     if (e.touches.length > 0) {
-      var x = e.touches[0].clientX / window.innerWidth - 0.5;
-      targetTilt = x * 6;
+      updateCursor(e.touches[0].clientX, e.touches[0].clientY);
     }
   }, { passive: true });
+
+  // Click anywhere toggles persistent X-ray lock — installation kiosk mode
+  // where there's no live cursor. Single click = peel sweater off. Click
+  // again to restore.
+  document.addEventListener('click', function () {
+    document.body.classList.toggle('peel-lock');
+  });
 
   var t0 = performance.now();
 
@@ -1442,11 +1965,11 @@
     // Smooth lerp toward cursor target (~150ms time-constant)
     currentTilt += (targetTilt - currentTilt) * 0.08;
 
-    // BREATH — 5-second sin cycle, ±1.5% scale, ±10% opacity drift
+    // BREATH — 5-second sin cycle, ±2.3% scale, soft opacity drift
     // Visibly alive but still editorial; the figure clearly inhales/exhales.
     var breathPhase = (t / 5) * Math.PI * 2;
-    var breathScale = 1 + 0.015 * Math.sin(breathPhase);
-    var breathOpacity = 0.85 + 0.15 * (Math.sin(breathPhase) * 0.5 + 0.5);
+    var breathScale = 1 + 0.023 * Math.sin(breathPhase);
+    var breathOpacity = 0.9 + 0.1 * (Math.sin(breathPhase) * 0.5 + 0.5);
 
     // BODY — uniform scale around chest pivot (1480, 540), opacity drift
     var bodyTransform = 'scale(' + breathScale.toFixed(5) + ')';
@@ -1455,6 +1978,10 @@
       bodyEls[i].style.transform = bodyTransform;
       bodyEls[i].style.opacity = breathOpacity.toFixed(3);
     }
+
+    // X-RAY REVEAL is handled by CSS (body.peel / body.peel-lock classes +
+    // CSS transitions). Plus a slow ambient @keyframes oscillation in CSS.
+    // See the <style> block at the top of the document.
 
     // HEAD — same breath scale + cursor-driven rotation around neck pivot (1480, 685)
     var headTransform = 'scale(' + breathScale.toFixed(5) + ') ' +
@@ -1469,7 +1996,7 @@
     // which is in headEls; their style.transform overrides parent's)
     for (i = 0; i < hairEls.length; i++) {
       var phaseOffset = i * 1.6;                   // different phase per group
-      var sway = 0.9 * Math.sin((t + phaseOffset) * 0.5); // ±0.9°, ~13s cycle
+      var sway = 1.35 * Math.sin((t + phaseOffset) * 0.5); // ±1.35°, ~13s cycle
       // We compose hair's transform manually — head rotation + hair sway + breath scale
       hairEls[i].style.transform =
         'scale(' + breathScale.toFixed(5) + ') ' +
